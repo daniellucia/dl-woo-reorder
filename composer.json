@@ -1,0 +1,22 @@
+{
+    "name": "daniel-lucia/dl-woo-reorder",
+    "description": "Allows users to re-purchase previous orders in WooCommerce.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Daniel Lucia",
+            "email": "daniellucia84@gmail.com",
+            "homepage": "http://daniellucia.es"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DL\\WooReorder\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "autoloader-suffix": "DLWooReorder"
+    }
+}
