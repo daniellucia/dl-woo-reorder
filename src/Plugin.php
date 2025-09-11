@@ -21,6 +21,10 @@ class Plugin
      */
     public function add_reorder_button($actions, $order)
     {
+        if (!$this->can_reorder($order)) {
+            return $actions;
+        }
+
         $actions['reorder'] = [
             'url'  => wp_nonce_url(
                 add_query_arg([
@@ -30,7 +34,62 @@ class Plugin
             ),
             'name' => __('Reorder', 'dl-woo-reorder'),
         ];
+
         return $actions;
+    }
+
+    /**
+     * Validamos si el pedido puede ser vuelto a comprar
+     * @param mixed $order
+     * @return bool
+     * @author Daniel Lucia
+     */
+    private function can_reorder($order): bool
+    {
+        if (!$order || !is_a($order, 'WC_Order')) {
+            return false;
+        }
+
+        if (!$order->get_items()) {
+            return false;
+        }
+
+        $allowed_statuses = apply_filters('dl_woo_reorder_allowed_statuses', [
+            'completed',
+            'processing',
+            'on-hold'
+        ]);
+
+        if (!in_array($order->get_status(), $allowed_statuses, true)) {
+            return false;
+        }
+
+        return $this->validate_order_access($order);
+    }
+
+    /**
+     * Validamos que el usuario pueda volver a comprar el pedido
+     * @param mixed $order
+     * @return bool
+     * @author Daniel Lucia
+     */
+    private function validate_order_access($order): bool
+    {
+        if (!$order || !is_a($order, 'WC_Order')) {
+            return false;
+        }
+
+        // Si el usuario no está logueado, no puede volver a comprar
+        //TODO: Que sea configurable
+        if (!is_user_logged_in()) {
+            return false;
+        }
+
+        $current_user_id = get_current_user_id();
+        $order_user_id = $order->get_user_id();
+
+        // Verificar que el pedido pertenezca al mismo usuario
+        return ($order_user_id === $current_user_id);
     }
 
     /**
@@ -72,7 +131,7 @@ class Plugin
                     if ($product_id == 0 || $quantity == 0) {
                         continue;
                     }
-                    
+
                     WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation);
                 }
 
