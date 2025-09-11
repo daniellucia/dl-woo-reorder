@@ -112,6 +112,10 @@ class Plugin
                     $quantity = 0;
                     $variation = [];
 
+                    if ($product_id <= 0 || $quantity <= 0) {
+                        continue;
+                    }
+                    
                     if (method_exists($item, 'get_product_id')) {
                         $product_id = $item->get_product_id();
                     }
@@ -126,10 +130,6 @@ class Plugin
 
                     if (method_exists($item, 'get_variation_attributes')) {
                         $variation = $item->get_variation_attributes();
-                    }
-
-                    if ($product_id == 0 || $quantity == 0) {
-                        continue;
                     }
 
                     WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation);
