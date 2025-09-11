@@ -8,6 +8,8 @@
  * Author URI: http://www.daniellucia.es
  * textdomain: dl-woo-reorder
  * Requires Plugins: woocommerce
+ * License:     GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 use DL\WooReorder\Plugin;
