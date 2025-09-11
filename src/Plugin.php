@@ -116,20 +116,14 @@ class Plugin
                         continue;
                     }
                     
-                    if (method_exists($item, 'get_product_id')) {
-                        $product_id = $item->get_product_id();
+                    $product = wc_get_product($variation_id > 0 ? $variation_id : $product_id);
+        
+                    if (!$product || !$product->is_purchasable()) {
+                        continue;
                     }
 
-                    if (method_exists($item, 'get_variation_id')) {
-                        $variation_id = $item->get_variation_id();
-                    }
-
-                    if (method_exists($item, 'get_quantity')) {
-                        $quantity = $item->get_quantity();
-                    }
-
-                    if (method_exists($item, 'get_variation_attributes')) {
-                        $variation = $item->get_variation_attributes();
+                    if ($product->managing_stock() && !$product->has_enough_stock($quantity)) {
+                        continue;
                     }
 
                     WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation);
