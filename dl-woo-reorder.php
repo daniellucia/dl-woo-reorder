@@ -35,7 +35,7 @@ defined('ABSPATH') || exit;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-add_action('init', function () {
+add_action('plugins_loaded', function () {
 
     load_plugin_textdomain('dl-woo-reorder', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
